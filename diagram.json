@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "author": "ai-robot",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-s3-devkitc-1",
+      "id": "esp",
+      "top": 0,
+      "left": 0,
+      "attrs": { "flashSize": "16" }
+    },
+    {
+      "type": "wokwi-hc-sr04",
+      "id": "ultrasonic",
+      "top": -130,
+      "left": -100,
+      "attrs": { "distance": "100" }
+    },
+    {
+      "type": "board-ssd1306",
+      "id": "oled",
+      "top": -140,
+      "left": 190,
+      "attrs": { "i2cAddress": "0x3c" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn",
+      "top": 250,
+      "left": -160,
+      "attrs": { "color": "green", "label": "START" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledLF",
+      "top": 110,
+      "left": 230,
+      "attrs": { "color": "green", "label": "L-tien" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledLB",
+      "top": 160,
+      "left": 230,
+      "attrs": { "color": "yellow", "label": "L-lui" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledRF",
+      "top": 210,
+      "left": 230,
+      "attrs": { "color": "green", "label": "R-tien" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledRB",
+      "top": 260,
+      "left": 230,
+      "attrs": { "color": "yellow", "label": "R-lui" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rLF",
+      "top": 115,
+      "left": 150,
+      "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rLB",
+      "top": 165,
+      "left": 150,
+      "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rRF",
+      "top": 215,
+      "left": 150,
+      "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rRB",
+      "top": 265,
+      "left": 150,
+      "attrs": { "value": "220" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+
+    [ "ultrasonic:VCC", "esp:3V3", "red", [] ],
+    [ "ultrasonic:GND", "esp:GND.1", "black", [] ],
+    [ "ultrasonic:TRIG", "esp:15", "blue", [] ],
+    [ "ultrasonic:ECHO", "esp:16", "green", [] ],
+
+    [ "oled:VCC", "esp:3V3", "red", [] ],
+    [ "oled:GND", "esp:GND.2", "black", [] ],
+    [ "oled:SDA", "esp:8", "violet", [] ],
+    [ "oled:SCL", "esp:9", "orange", [] ],
+
+    [ "btn:1.l", "esp:17", "gold", [] ],
+    [ "btn:2.l", "esp:GND.1", "black", [] ],
+
+    [ "esp:4", "rLF:1", "green", [] ],
+    [ "rLF:2", "ledLF:A", "green", [] ],
+    [ "ledLF:C", "esp:GND.2", "black", [] ],
+
+    [ "esp:5", "rLB:1", "gold", [] ],
+    [ "rLB:2", "ledLB:A", "gold", [] ],
+    [ "ledLB:C", "esp:GND.2", "black", [] ],
+
+    [ "esp:6", "rRF:1", "green", [] ],
+    [ "rRF:2", "ledRF:A", "green", [] ],
+    [ "ledRF:C", "esp:GND.2", "black", [] ],
+
+    [ "esp:7", "rRB:1", "gold", [] ],
+    [ "rRB:2", "ledRB:A", "gold", [] ],
+    [ "ledRB:C", "esp:GND.2", "black", [] ]
+  ]
+}

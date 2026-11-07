@@ -1,0 +1,64 @@
+name: CI — test logic, build firmware, mo phong Wokwi
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  kiem-tra:
+    runs-on: ubuntu-latest
+
+    # Dua secret len muc job thi buoc ben duoi moi dung duoc trong "if".
+    # (Trong "if" cua mot step khong doc truc tiep duoc secrets.)
+    env:
+      WOKWI_CLI_TOKEN: ${{ secrets.WOKWI_CLI_TOKEN }}
+
+    steps:
+      - name: Lay ma nguon
+        uses: actions/checkout@v4
+
+      - name: Cai Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache PlatformIO
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio
+            .pio
+          key: pio-${{ runner.os }}-${{ hashFiles('platformio.ini') }}
+
+      - name: Cai PlatformIO
+        run: pip install --upgrade platformio
+
+      # Buoc 1 — test logic thuan, chay thang tren may ao cua CI.
+      # Khong can Wokwi, khong can token, khong can phan cung.
+      - name: Test logic dieu huong
+        run: pio test -e native
+
+      # Buoc 2 — bien dich firmware cho ESP32-S3.
+      - name: Build firmware
+        run: pio run -e esp32s3
+
+      # Buoc 3 — chay robot ao va doc serial.
+      # Can secret WOKWI_CLI_TOKEN (lay mien phi tai wokwi.com/dashboard/ci).
+      # Chua co token thi buoc nay tu dong bo qua, hai buoc tren van chay.
+      - name: Mo phong Wokwi
+        if: env.WOKWI_CLI_TOKEN != ''
+        uses: wokwi/wokwi-ci-action@v1
+        with:
+          token: ${{ secrets.WOKWI_CLI_TOKEN }}
+          timeout: 20000
+          expect_text: 'ROBOT READY'
+          serial_log_file: 'serial.log'
+
+      - name: Luu serial log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: serial-log
+          path: serial.log
+          if-no-files-found: ignore

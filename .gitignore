@@ -1,0 +1,20 @@
+# PlatformIO
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# VS Code — keep extensions.json so the team installs the same extensions
+.vscode/*
+!.vscode/extensions.json
+
+# Build and logs
+*.elf
+*.bin
+*.map
+wokwi-logs/
+serial.log
+
+# Operating system
+Thumbs.db
+desktop.ini
+.DS_Store

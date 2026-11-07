@@ -1,0 +1,13 @@
+# Run on the files you touched before opening a pull request:
+#     clang-format -i path/to/file.cpp
+# The C/C++ extension in VS Code can also format on save.
+---
+Language: Cpp
+BasedOnStyle: Google
+IndentWidth: 4
+ColumnLimit: 100
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: WithoutElse
+PointerAlignment: Left
+SortIncludes: false

@@ -1,0 +1,18 @@
+# Normalise line endings. Without this, a Windows checkout stores CRLF
+# and the Linux CI runner sees every line as changed.
+* text=auto eol=lf
+
+# Windows-only files keep CRLF.
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+
+# Never touch binaries.
+*.png   binary
+*.jpg   binary
+*.bin   binary
+*.elf   binary
+*.ico   binary
+
+# Keep generated and vendored files out of diff stats and language detection.
+.pio/**             linguist-generated
+docs/**             linguist-documentation
