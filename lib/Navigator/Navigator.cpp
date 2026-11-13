@@ -32,11 +32,16 @@ void Navigator::start(uint32_t nowMs) {
     //   - move state_ into Cruise
     //   - reset consecutiveBlocks_ and hadBlock_
     //   Hint: use the enter() helper below.
+    enter( State::Cruise, nowMs, 0 );
+    consecutiveBlocks_=0;
+    hadBlock_=false;
+
     (void)nowMs;
 }
 
 void Navigator::halt() {
     // TODO [N2]: Stop for good. Move state_ back to Idle.
+      state_= State::Idle;
 }
 
 const char* Navigator::stateName() const {
@@ -45,7 +50,18 @@ const char* Navigator::stateName() const {
     //   Idle -> "IDLE", Cruise -> "CRUISE",
     //   Backup -> "BACKUP", Turn -> "TURN"
     //   Hint: switch on state_.
-    return "?";
+     switch (state_)
+     {
+        case State::Idle:
+            return "IDLE";
+        case State::Backup:
+            return "BACKUP";
+        case State::Cruise:
+            return "CRUISE";
+        case State::Turn:
+            return "TURN";
+
+     }
 }
 
 void Navigator::enter(State s, uint32_t nowMs, uint32_t durationMs) {
@@ -55,7 +71,15 @@ void Navigator::enter(State s, uint32_t nowMs, uint32_t durationMs) {
     //   durationMs == 0 means the state has no deadline: it runs
     //   until some other event moves us out of it (Cruise works
     //   that way).
-    (void)s; (void)nowMs; (void)durationMs;
+
+    state_=s;
+    if( durationMs==0)
+    {
+        phaseEndMs_= UINT32_MAX;
+    }
+    else
+    phaseEndMs_=nowMs+durationMs;
+    
 }
 
 void Navigator::registerBlock(uint32_t nowMs) {
@@ -67,7 +91,20 @@ void Navigator::registerBlock(uint32_t nowMs) {
     //
     //   This counter is how we notice the robot is wedged in a
     //   corner: many blocks in a short span.
-    (void)nowMs;
+    if (hadBlock_ &&(nowMs-lastBlockMs_)< cfg_.stuckWindowMs)
+        {
+            consecutiveBlocks_++;
+        }
+    else
+    {
+        consecutiveBlocks_=1;
+    }
+    lastBlockMs_= nowMs;
+    hadBlock_=true;
+
+
+
+  
 }
 
 uint32_t Navigator::turnDuration() const {
